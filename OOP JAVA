@@ -1,0 +1,114 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+class BankAccount {
+private:
+    int accountNumber;
+    string accountHolderName;
+    double balance;
+
+public:
+    BankAccount(int accNo, string name, double initialBalance) {
+        accountNumber = accNo;
+        accountHolderName = name;
+        balance = initialBalance;
+    }
+
+    int getAccountNumber() {
+        return accountNumber;
+    }
+
+    string getAccountHolderName() {
+        return accountHolderName;
+    }
+
+    double getBalance() {
+        return balance;
+    }
+
+    void deposit(double amount) {
+        balance += amount;
+        cout << "Deposited: $" << amount << "\n";
+    }
+
+    void withdraw(double amount) {
+        if (amount > balance) {
+            cout << "Insufficient balance.\n";
+        } else {
+            balance -= amount;
+            cout << "Withdrawn: $" << amount << "\n";
+        }
+    }
+
+    void displayAccountInfo() {
+        cout << "Account Number: " << accountNumber << "\n";
+        cout << "Account Holder: " << accountHolderName << "\n";
+        cout << "Balance: $" << balance << "\n";
+    }
+};
+
+void saveAccountToFile(BankAccount account) {
+    ofstream file("accounts.txt", ios::app);
+    file << account.getAccountNumber() << "," << account.getAccountHolderName() << "," << account.getBalance() << "\n";
+    file.close();
+}
+
+int main() {
+    int accNumber;
+    string name;
+    double initialBalance;
+
+    cout << "Enter account number: ";
+    cin >> accNumber;
+    cin.ignore();
+
+    cout << "Enter account holder's name: ";
+    getline(cin, name);
+
+    cout << "Enter initial balance: ";
+    cin >> initialBalance;
+
+    BankAccount account(accNumber, name, initialBalance);
+
+    int choice;
+    do {
+        cout << "\n1. Deposit";
+        cout << "\n2. Withdraw";
+        cout << "\n3. Check Balance";
+        cout << "\n4. Save Account";
+        cout << "\n5. Exit";
+        cout << "\nChoose an option: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                double depositAmount;
+                cout << "Enter amount to deposit: ";
+                cin >> depositAmount;
+                account.deposit(depositAmount);
+                break;
+            case 2:
+                double withdrawAmount;
+                cout << "Enter amount to withdraw: ";
+                cin >> withdrawAmount;
+                account.withdraw(withdrawAmount);
+                break;
+            case 3:
+                account.displayAccountInfo();
+                break;
+            case 4:
+                saveAccountToFile(account);
+                cout << "Account saved successfully.\n";
+                break;
+            case 5:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid option. Try again.\n";
+        }
+    } while (choice != 5);
+
+    return 0;
+}
